@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form onsubmit="event.preventDefault(); sendAgent()">
+        <input type="text" name="agent">
+        <button>New agent</button>
+        
+    </form>
+    <h1>Liste des agents</h1>
+    <div id='agents'></div>
+    <script>
+        fetch('http://localhost:3000/agents')
+        .then(response => response.json())
+        .then((data) => {
+            console.log(data)
+            let agents = document.querySelector('#agents')
+            data.forEach(agent => {
+                agents.innerHTML += `
+                <a href="agent.html?id=${agent.id}">
+                    <h2>${agent.name}</h2>
+                </a>
+                `
+            })
+        })
+
+        const sendAgent = async () => {
+            let agent = document.querySelector('input[name="agent"]').value
+            let response = await fetch('http://localhost:3000/agents', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({name: agent})
+            })
+            window.location.href = 'index.html'
+        }
+    </script>
+</body>
+</html>
